@@ -1,25 +1,29 @@
-# sf-bridge – Stockfish bridge
+# ♟️ sf-bridge – Stockfish bridge
+[![CI](https://github.com/developsessions/sf-bridge/actions/workflows/ci.yml/badge.svg)](https://github.com/developsessions/sf-bridge/actions/workflows/ci.yml)
+[![License: GPL v3](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](LICENSE)
+![Rust](https://img.shields.io/badge/rust-stable-orange.svg)
+![Platforms](https://img.shields.io/badge/platforms-Linux%20%7C%20Windows%20%7C%20Docker-lightgrey.svg)
 
 Lets the patched chess.com app on your phone run Game Review on **the Stockfish of your own computer**
 instead of the phone's, over your own Wi-Fi. It is what the *Stockfish on your computer* reviewer in
 Quwi's Patches talks to.
 
-Nothing leaves your network: the bridge only waits for the phone and opens no outbound connections.
+🔒 Nothing leaves your network: the bridge only waits for the phone and opens no outbound connections.
 There are no accounts and no telemetry. It is a single static binary written in Rust.
 
-## What you need
+## 📋 What you need
 
-- **Stockfish 17 or newer** — <https://stockfishchess.org/download/> (not needed with the Docker image,
+- ♟️ **Stockfish 17 or newer** — <https://stockfishchess.org/download/> (not needed with the Docker image,
   which includes it).
-- Phone and computer on the **same Wi-Fi**, with the router not isolating clients from each other.
+- 📱 Phone and computer on the **same Wi-Fi**, with the router not isolating clients from each other.
 
-## Get it
+## 📦 Get it
 
-- **Binaries** for Linux (x86_64, static) and Windows (x86_64): the *Releases* page, or the artifacts of a CI run.
-- **Docker**: `ghcr.io/developsessions/sf-bridge:latest`
-- **From source**: `cargo build --release`
+- 💾 **Binaries** for Linux (x86_64, static) and Windows (x86_64): the *Releases* page, or the artifacts of a CI run.
+- 🐳 **Docker**: `ghcr.io/developsessions/sf-bridge:latest`
+- 🦀 **From source**: `cargo build --release`
 
-## Set it up
+## 🚀 Set it up
 
 1. Put `stockfish` (`stockfish.exe` on Windows) next to `sf-bridge`, or point `SF_PATH` at it.
 2. Allow the port through your firewall, once:
@@ -57,7 +61,7 @@ There are no accounts and no telemetry. It is a single static binary written in 
 
    Keep the computer on and the bridge running during a review.
 
-## Options
+## ⚙️ Options
 
 ```
 sf-bridge [--port <1-65535>]
@@ -69,7 +73,7 @@ sf-bridge [--port <1-65535>]
 | `SF_PATH` | `./stockfish[.exe]`, then `PATH` | Stockfish binary |
 | `TOKEN_FILE` | `./token.txt` | where the token is kept |
 
-## Docker
+## 🐳 Docker
 
 ```
 docker run -d --name sf-bridge --restart unless-stopped -p 7892:7892 -v sf-bridge:/data ghcr.io/developsessions/sf-bridge:latest
@@ -81,7 +85,7 @@ Another port: `-e TCP_PORT=9000 -p 9000:9000` (or `--port 9000` after the image 
 bridge prints the container's address; give the phone your computer's LAN address with the published port
 (or run with `--network host`). The container runs as an unprivileged user.
 
-## systemd (not as root)
+## 🛡️ systemd (not as root)
 
 `systemd/sf-bridge.service` runs the bridge as a throwaway unprivileged user (`DynamicUser=yes`), sandboxed,
 with the token in `/var/lib/sf-bridge`. Stockfish must not be in a home folder (`ProtectHome`).
@@ -95,7 +99,7 @@ journalctl -u sf-bridge -n 20
 sudo cat /var/lib/private/sf-bridge/token.txt
 ```
 
-## Test and benchmark
+## ⏱️ Test and benchmark
 
 The release archives and `cargo build` also contain two tools. Run them while the bridge is running, from
 the folder with `token.txt` (or set `TOKEN_FILE`); `TEST_HOST` tests another machine on the network.
@@ -117,7 +121,7 @@ threads 32, hash 1024 MB
 5M   nodes a move: 0.20 s
 ```
 
-## The protocol
+## 🔌 The protocol
 
 Port **7892**. It is UCI with one handshake in front, one command per line:
 
@@ -136,7 +140,7 @@ Safeguards: the token is compared in constant time, a connection that does not a
 dropped, lines over 1 MiB drop the connection, and at most 16 connections are served at once. It is the only
 port the bridge opens.
 
-## If the phone does not see the computer
+## 🔧 If the phone does not see the computer
 
 The bridge prints a line whenever a connection arrives, so the console tells you which half is broken:
 
@@ -148,12 +152,12 @@ The bridge prints a line whenever a connection arrives, so the console tells you
 4. Timeouts in the middle of a review usually mean the computer went to sleep.
 5. The computer's address changes when it reconnects unless the router reserves one for it (DHCP reservation).
 
-## CI
+## 🤖 CI
 
 `.github/workflows/ci.yml` runs rustfmt, clippy and the build on every push and pull request, builds the Linux
 and Windows binaries, and pushes the Docker image to GHCR from `main` (`latest`) and from version tags
 (`1.2.3`, `1.2`). A tag `vX.Y.Z` also creates a GitHub release with both binaries attached.
 
-## License
+## 📄 License
 
 [GNU General Public License v3.0](LICENSE) (`GPL-3.0-only`).

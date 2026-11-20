@@ -1,0 +1,18 @@
+[package]
+name = "sf-bridge"
+version = "1.0.0"
+edition = "2021"
+description = "Stockfish UCI over TCP for the Stockfish+ Game Review of Quwi's Patches"
+license = "GPL-3.0-only"
+
+[[bin]]
+name = "sf-bridge"
+path = "src/main.rs"
+
+[dependencies]
+getrandom = "0.3"
+if-addrs = "0.13"
+
+[profile.release]
+lto = true
+strip = true

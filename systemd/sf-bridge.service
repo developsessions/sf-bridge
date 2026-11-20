@@ -1,0 +1,45 @@
+[Unit]
+Description=sf-bridge: Stockfish UCI over TCP for the chess.com Game Review on the phone
+Documentation=file:///usr/local/share/doc/sf-bridge/README.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/sf-bridge
+Environment=SF_PATH=/usr/local/lib/sf-bridge/stockfish
+Environment=TCP_PORT=7892
+Environment=TOKEN_FILE=/var/lib/sf-bridge/token.txt
+Restart=on-failure
+RestartSec=3
+
+# Not root: a throwaway user created by systemd for this service. token.txt lives in its state
+# directory (/var/lib/sf-bridge) and survives restarts.
+DynamicUser=yes
+StateDirectory=sf-bridge
+StateDirectoryMode=0700
+WorkingDirectory=/var/lib/sf-bridge
+
+# Hardening: the bridge only needs the network and to run one binary.
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+AmbientCapabilities=
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+SystemCallArchitectures=native
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target
